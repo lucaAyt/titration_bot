@@ -1,19 +1,34 @@
+# Utility functions which are case specific
 import re
 
 import pandas as pd
 import numpy as np
 
 
-# Reorganise data to ensure metal and acid titrations can be distinguished
-def characterise_metal_acid_titrations(data):
+def characterise_metal_acid_titrations(data: pd.DataFrame) -> pd.DataFrame:
+    """
+    Name of data parsed (from UV/Vis) will have a suffix indicating what kind of titrant was added so data can be
+    assoc. with the correct titrant.
+    Here that data will be characterised based upon the suffix provided and a new column with titrant added.
+
+    :param data: dataframe of data from instrument
+    :return: original dataframe with titrant column added
+    """
     data['volume_change'] = data.titrant.apply(lambda x: float(re.match('[0-9.]+', x).group()))
-    # data.drop(columns=['titrant'], inplace=True)
     data.titrant = data.titrant.apply(lambda x: re.search('[a-z]+', x).group() if re.search('[a-z]+', x) else 'm')
 
     return data
 
 
-def merge_data_titration_params(data, dict_titrations_exps):
+def merge_data_titration_params(data: pd.DataFrame, dict_titrations_exps: dict) -> pd.DataFrame:
+    """
+    Data parsed from instrument (UV/Vis) is merged with the parameters of the titration designed
+    on volume change which should match experiment with design.
+
+    :param data: dataframe of data from instrument
+    :param dict_titrations_exps: experiment name with titration objects housing titration design
+    :return: dataframe where data received from instrument is merged with titration parameters in design
+    """
     data = characterise_metal_acid_titrations(data)
 
     list_df = []
@@ -34,13 +49,29 @@ def merge_data_titration_params(data, dict_titrations_exps):
     return new_data
 
 
-# Analyse data
-def track_data(df, wl): return df.loc[df['Wavelength nm.'] >= 250, 'Abs.'].max() if wl == 'max' \
-    else df.loc[df['Wavelength nm.'] == wl]['Abs.'].mean()  # Mean because sometimes there is a duplicate
+# TODO: Double check what exactly this returns
+def track_data(df, wl):
+    """
+    Gets the absorbance at specified wavelength for each spectra in dataframe. Helper function for below.
+    :param df: dataframe containing UV/Vis information
+    :param wl: wavelength to monitor at
+    :return: the absorbance
+    """
+    return df.loc[df['Wavelength nm.'] >= 250, 'Abs.'].max() if wl == 'max' \
+        else df.loc[df['Wavelength nm.'] == wl]['Abs.'].mean()  # Mean because sometimes there is a duplicate
 
 
-# Track diff with max peak !!
-def tracking_df(df, wls, exps, wl_0='max', complex_tit=True):
+def tracking_df(df: pd.DataFrame, wls: list[str], exps: list[str], wl_0='max', complex_tit=True) -> dict:
+    """
+    Tracks difference in absorbance of each spectra with absorbance of initial at specified wavelength.
+    Also can compare two different wavelengths (like MLCT and pi-pi*).
+    :param df: UV/Vis data
+    :param wls: list of wavelegnths to monitor at (normally MLCT)
+    :param exps: experiment names
+    :param wl_0: wavelength to compare with
+    :param complex_tit: Boolean indicating whether complex titration is being monitored or not
+    :return:
+    """
     dict_df = {}
     for wl in wls:
         tracking_data = df[np.isin(df.name, exps)] \
@@ -49,17 +80,18 @@ def tracking_df(df, wls, exps, wl_0='max', complex_tit=True):
             .unstack(['name', 'guest_name']) \
             .apply(lambda x: x - x.loc[0])
 
-        # print(tracking_data)
-        # tracking_data = construct_init_follow_up_titration(tracking_data, guests) \
-        #                   .dropna(how='all', axis=0) \
-        #                   .apply(lambda x: x - x.loc[0])
-
         dict_df[str(wl)] = tracking_data
 
     return dict_df
 
 
-def combine_track_data(data, dict_tracking_data):
+def combine_track_data(data: pd.DataFrame, dict_tracking_data: dict) -> pd.DataFrame:
+    """
+    Combine data tracked above with original dataframe
+    :param data: original dataframe containing all parameters and data from UV/Vis
+    :param dict_tracking_data: result of tracking data
+    :return: original dataframe with additional column of wavelengths tracked
+    """
     list_track_data = []
     for wl, wl_track_data in dict_tracking_data.items():
         wl_track_data_long = wl_track_data.melt(ignore_index=False).reset_index().dropna(how='any', axis=0)

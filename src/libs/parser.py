@@ -4,7 +4,7 @@ import os
 import json
 import pandas as pd
 
-from ami_utils import parse as pa
+# from ami_utils import parse as pa
 
 
 # Read in .txt files from UV-Vis Shimadzu

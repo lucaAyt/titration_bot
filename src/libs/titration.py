@@ -3,11 +3,11 @@ import numpy as np
 
 from dataclasses import dataclass, field
 
-
-# General dataclass used to create differents hosts and guests
 @dataclass
 class titrant:
-    """Contains params of titrant"""
+    """
+    Dataclass used to create titrants for titrations
+    """
 
     # TODO: Add density
     type_tit: str  # Host, Guest
@@ -20,20 +20,21 @@ class titrant:
     order_complex: int = 0
     dilute: list[list[float]] = field(default_factory=list)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.mol == 0 and self.conc == 0 and self.volume != 0:
-            self.mol = self.mass / 1000 / self.molecular_weight  # mol
-            self.conc = self.mol / (self.volume / 1000)  # M
+            self.mol = self.mass / 1000 / self.molecular_weight    # mol
+            self.conc = self.mol / (self.volume / 1000)            # M
 
-        elif self.conc != 0 and self.mol == 0:  # Test this !!!
-            self.mol = self.conc * (self.volume / 1e3)
-            self.mass = self.mol * self.molecular_weight
+        # TODO: Would be nice to add a test for this.
+        elif self.conc != 0 and self.mol == 0:
+            self.mol = self.conc * (self.volume / 1e3)      # mol
+            self.mass = self.mol * self.molecular_weight    # g
 
         if self.dilute:
             for dil in self.dilute:
                 self.dilution(*dil)
 
-    def dilution(self, v1, v2):
+    def dilution(self, v1: float, v2: float) -> None:
         # Unit conversion
         v1 = v1 / 1000  # mL to dm3
         v2 = v2 / 1000  # mL to dm3
@@ -45,29 +46,40 @@ class titrant:
         self.volume = v2 * 1000  # dm3 to mL
 
 
-# General purpose titrator
-class Titrator:
+class Titration:
+    """
+    Titration object used to contain all parameters of a specific host-guest titration.
+    There can be multiple titrations per experiment.
+    """
 
-    def __init__(self, host, guest, init_volume, tit_volume, num_tit, rank, tit_volume_array, curr_volume=None):
-        assert host.type_tit.lower() == 'host' or 'inSitu_host', f'Argument not of type Host'  # TODO: Check if it is okay to just use host, more generic.
+    # TODO: ranks should be int
+    def __init__(self, host: titrant, guest: titrant, init_volume: float, titr_volume: float, num_titr: float,
+                 rank: float, titr_volume_array: list[float], curr_volume=None):
+        assert host.type_tit.lower() == 'host' or 'inSitu_host', f'Argument not of type Host'
         assert guest.type_tit.lower() == 'guest', f'Argument not of type Guest'
-        if tit_volume_array:
-            assert len(tit_volume_array) == num_tit, f'Number of titrations not matched with sequence given.'
+        if titr_volume_array:
+            assert len(titr_volume_array) == num_titr, f'Number of titrations not matched with sequence given.'
 
         self.host = host
         self.guest = guest
 
         self.init_volume = init_volume  # mL
         self.curr_volume = curr_volume if curr_volume else init_volume  # mL
-        self.tit_volume = tit_volume  # µL
-        self.num_tit = num_tit
-        self.tit_volume_array = tit_volume_array  # µL
+        self.tit_volume = titr_volume  # µL
+        self.num_tit = num_titr
+        self.tit_volume_array = titr_volume_array  # µL
         self.rank = rank
 
+        # All parameters of titration to be populated in dataframe
         self.df_params = pd.DataFrame()
 
-    def construct_gh_titration(self):
-        # Ensure guest is titrated and host is init sol
+    def construct_gh_titration(self) -> None:
+        """
+        Maps all parameters of the designed titration to a dataframe
+        :return: n.a
+        """
+
+        # TODO: Ensure guest is titrated and host is init sol
 
         indx = np.arange(self.num_tit + 1)
         vol_cumsum = np.insert(np.cumsum(self.tit_volume_array), 0, 0) if self.tit_volume_array else []
