@@ -1,7 +1,7 @@
 import os
 import json
 
-import libs.titration as titr
+from .libs import titration as titr
 
 dict_titrants_exps = {}                 # storage of titrant use in titration experiment
 dict_titrations_exps = {}               # storage of titration objects which are associated with experiment
@@ -93,9 +93,9 @@ def initialize_titrations(exp_: list[str]) -> None:
             dict_titrations_exps[exp_name] = (titrations_objs, len(titration_exp.get('tits')))
 
 
-if __name__ == '__main__':
-    titration_experiments = ['LUB160']
-    initialize_titrations(titration_experiments)
+# if __name__ == '__main__':
+#     titration_experiments = ['LUB160']
+#     initialize_titrations(titration_experiments)
 
 
 
