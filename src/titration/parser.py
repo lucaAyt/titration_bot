@@ -29,9 +29,9 @@ def parse_uvvis(df: pd.DataFrame, path: str) -> pd.DataFrame:
 
 # Construct uvvis data dataframe via walk through paths
 def get_data(exp_names):
-    path = os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'Documents', 'UV_Vis')
+    path = os.path.join(os.path.dirname(__file__), '', '../..', '..', '..', 'Documents', 'UV_Vis')
     if not os.path.exists(path):
-        path = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'UV_Vis')
+        path = os.path.join(os.path.dirname(__file__), '', '../..', 'data', 'UV_Vis')
 
     dict_df = {}
     for root, dirs, files in os.walk(path):
@@ -49,7 +49,7 @@ def get_data(exp_names):
 def get_exp_reps(exp_names):
     # Load config json
 
-    cnfg_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'config.json')
+    cnfg_path = os.path.join(os.path.dirname(__file__), '', '../../config', 'config.json')
     cnfg = json.load(open(cnfg_path))
 
     reps = []

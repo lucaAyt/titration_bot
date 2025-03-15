@@ -1,17 +1,17 @@
 import os
 import json
 
-from .libs import titration as titr
+from titration import titration as titr
 
-dict_titrants_exps = {}                 # storage of titrant use in titration experiment
+dict_titrants_exps = {}                 # storage of Titrant use in titration experiment
 dict_titrations_exps = {}               # storage of titration objects which are associated with experiment
 
 # Load config json
-cnfg_path = os.path.join(os.path.dirname(__file__), 'config', 'config.json')
+cnfg_path = os.path.join(os.path.dirname(__file__), '../config', 'config.json')
 cnfg = json.load(open(cnfg_path))
 
 
-def initialize_titrations(exp_: list[str]) -> None:
+def init_titrations(exp_: list[str]) -> None:
     """
     Used to initialise titration experiments from a list of experiment names provided
     and the corresponding parameters stipulated in the config for each experiment name.
@@ -33,7 +33,7 @@ def initialize_titrations(exp_: list[str]) -> None:
             # Create titrants used for this experiment and store in dictionary for global use
             titrants_objs = []
             for titrant in titrants:
-                titrants_objs.append(titr.titrant(**titrant))
+                titrants_objs.append(titr.Titrant(**titrant))
             dict_titrants_exps[exp_name] = titrants_objs
 
             # Create Titration objects based on titration specified and the titrants used for experiment
@@ -48,7 +48,7 @@ def initialize_titrations(exp_: list[str]) -> None:
             for i, titration in enumerate(exp_titrations):
                 exp_titrants = dict_titrants_exps[exp_name]
 
-                # Get host and guest titrant objects
+                # Get host and guest Titrant objects
                 host = [*filter(lambda titrant_x: titrant_x.name == titration['host_name'], exp_titrants)][0]
                 guest = [*filter(lambda titrant_x: titrant_x.name == titration['guest_name'], exp_titrants)][0]
 
@@ -77,9 +77,9 @@ def initialize_titrations(exp_: list[str]) -> None:
 
                     # Reinitilaise or update inSitu titrants (host) provided new volume and mol plus overwrite
                     host_attrs = {**vars(host), 'mol': mol_host, 'volume': curr_volume, 'conc': conc_host}
-                    host = titr.titrant(**host_attrs)
+                    host = titr.Titrant(**host_attrs)
 
-                    # TODO: Overwrite titrant object stored in dict_titrants_exps to avoid possible bugs
+                    # TODO: Overwrite Titrant object stored in dict_titrants_exps to avoid possible bugs
                     # Create titration object with all parameters and store
                     titration_obj = titr.Titration(host, guest, init_volume, titration['tit_volume'],
                                                    titration['num_tit'], titration['titration_rank'],
@@ -93,9 +93,9 @@ def initialize_titrations(exp_: list[str]) -> None:
             dict_titrations_exps[exp_name] = (titrations_objs, len(titration_exp.get('tits')))
 
 
-# if __name__ == '__main__':
-#     titration_experiments = ['LUB160']
-#     initialize_titrations(titration_experiments)
+if __name__ == '__main__':
+    titration_experiments = ['LUB160']
+    init_titrations(titration_experiments)
 
 
 

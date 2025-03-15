@@ -4,7 +4,7 @@ import numpy as np
 from dataclasses import dataclass, field
 
 @dataclass
-class titrant:
+class Titrant:
     """
     Dataclass used to create titrants for titrations
     """
@@ -53,7 +53,7 @@ class Titration:
     """
 
     # TODO: ranks should be int
-    def __init__(self, host: titrant, guest: titrant, init_volume: float, titr_volume: float, num_titr: float,
+    def __init__(self, host: Titrant, guest: Titrant, init_volume: float, titr_volume: float, num_titr: float,
                  rank: float, titr_volume_array: list[float], curr_volume=None):
         assert host.type_tit.lower() == 'host' or 'inSitu_host', f'Argument not of type Host'
         assert guest.type_tit.lower() == 'guest', f'Argument not of type Guest'

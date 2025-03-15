@@ -7,12 +7,12 @@ import numpy as np
 
 def characterise_metal_acid_titrations(data: pd.DataFrame) -> pd.DataFrame:
     """
-    Name of data parsed (from UV/Vis) will have a suffix indicating what kind of titrant was added so data can be
-    assoc. with the correct titrant.
-    Here that data will be characterised based upon the suffix provided and a new column with titrant added.
+    Name of data parsed (from UV/Vis) will have a suffix indicating what kind of Titrant was added so data can be
+    assoc. with the correct Titrant.
+    Here that data will be characterised based upon the suffix provided and a new column with Titrant added.
 
     :param data: dataframe of data from instrument
-    :return: original dataframe with titrant column added
+    :return: original dataframe with Titrant column added
     """
     data['volume_change'] = data.titrant.apply(lambda x: float(re.match('[0-9.]+', x).group()))
     data.titrant = data.titrant.apply(lambda x: re.search('[a-z]+', x).group() if re.search('[a-z]+', x) else 'm')
