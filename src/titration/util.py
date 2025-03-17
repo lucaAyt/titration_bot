@@ -107,8 +107,12 @@ def combine_track_data(data: pd.DataFrame, dict_tracking_data: dict) -> pd.DataF
     return df
 
 
-def get_exp_reps(exp_names):
-    # Load config json
+def get_exp_reps(exp_names: list) -> list:
+    """
+    From the list of experiments investigating a list containing all the replicates for each experiment is generated
+    :param exp_names: List of experiments to get from config (titrations)
+    :return: list of experiments with all replicates included
+    """
 
     cnfg_path = os.path.join(os.path.dirname(__file__), '', '../../config', 'config.json')
     cnfg = json.load(open(cnfg_path))
@@ -122,3 +126,19 @@ def get_exp_reps(exp_names):
                 reps.append(t['name'])
 
     return [*sum(reps, [])]
+
+
+def remove_unrelated_wl_track(df, labels_mlct):
+    """
+    Remove peak trackings that are not relevant for certain experiments
+
+    :param df: Dataframe containing all the peak tracks added
+    :param labels_mlct: dictionary of experiment labels and their associated MLCTs
+    :return: Dataframe with only relevant MLCT peak tracks retained
+    """
+    for name, mlct in labels_mlct.items():
+        df.drop(df.loc[(df.name.str.contains(name)) & ~(df.wl_track == str(mlct))].index, inplace=True)
+
+    df.reset_index(drop=True)
+
+    return df

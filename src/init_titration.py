@@ -93,9 +93,9 @@ def init_titrations(exp_: list[str]) -> None:
             dict_titrations_exps[exp_name] = (titrations_objs, len(titration_exp.get('tits')))
 
 
-if __name__ == '__main__':
-    titration_experiments = ['LUB160']
-    init_titrations(titration_experiments)
+# if __name__ == '__main__':
+#     titration_experiments = ['LUB160']
+#     init_titrations(titration_experiments)
 
 
 
