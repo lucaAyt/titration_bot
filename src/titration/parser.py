@@ -44,20 +44,3 @@ def get_data(exp_names):
             dict_df[name[0]] = df
 
     return dict_df
-
-
-def get_exp_reps(exp_names):
-    # Load config json
-
-    cnfg_path = os.path.join(os.path.dirname(__file__), '', '../../config', 'config.json')
-    cnfg = json.load(open(cnfg_path))
-
-    reps = []
-    for t in cnfg['titrations']:
-        if t['name'] in exp_names:
-            if t['exps']:
-                reps.append(t['exps'])
-            else:
-                reps.append(t['name'])
-
-    return [*sum(reps, [])]

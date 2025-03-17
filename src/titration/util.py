@@ -1,5 +1,7 @@
 # Utility functions which are case specific
 import re
+import os
+import json
 
 import pandas as pd
 import numpy as np
@@ -103,3 +105,20 @@ def combine_track_data(data: pd.DataFrame, dict_tracking_data: dict) -> pd.DataF
     df = data.merge(wl_track_data_long,
                     on=[col for col in wl_track_data_long.columns if 'value' not in col and 'wl' not in col])
     return df
+
+
+def get_exp_reps(exp_names):
+    # Load config json
+
+    cnfg_path = os.path.join(os.path.dirname(__file__), '', '../../config', 'config.json')
+    cnfg = json.load(open(cnfg_path))
+
+    reps = []
+    for t in cnfg['titrations']:
+        if t['name'] in exp_names:
+            if t['exps']:
+                reps.append(t['exps'])
+            else:
+                reps.append(t['name'])
+
+    return [*sum(reps, [])]
