@@ -1,6 +1,6 @@
 [project]
 name = "titration-bot"
-version = "0.0.2"
+version = "0.0.3"
 description = "A titration tool used to design and combine UV/Vis data with design into python data structures"
 authors = [{name = "Luca Bertossi", email = "lucabertossi@gmail.com"}]
 readme = "README.md"
