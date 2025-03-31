@@ -1,6 +1,0 @@
-mfethuls @ git+ssh://git@github.com/lucaAyt/mfethuls.git
-pandas
-numpy
-notebook
-seaborn
-matplotlib
