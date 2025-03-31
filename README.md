@@ -6,7 +6,7 @@ A package used to design and analyse titration experiments.<br>
 Titration experiments can be created and then their parameters evaluated. Once the experiment is conducted,
 the data can be combined with the experiment in a single python data structure (DataFrame) for succinct analysis and plotting.
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15044644.svg)](https://doi.org/10.5281/zenodo.15044644)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15112907.svg)](https://doi.org/10.5281/zenodo.15112907)
 
 ## 🔧 Install
 It is recommended to build from within a virtual environment:<br> 
