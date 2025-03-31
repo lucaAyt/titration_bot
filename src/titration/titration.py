@@ -55,10 +55,10 @@ class Titration:
     # TODO: ranks should be int
     def __init__(self, host: Titrant, guest: Titrant, init_volume: float, titr_volume: float, num_titr: float,
                  rank: float, titr_volume_array: list[float], curr_volume=None):
-        assert host.type_tit.lower() == 'host' or 'inSitu_host', f'Argument not of type Host'
-        assert guest.type_tit.lower() == 'guest', f'Argument not of type Guest'
+        assert host.type_tit.lower() == 'host' or 'inSitu_host', 'Argument not of type Host'
+        assert guest.type_tit.lower() == 'guest', 'Argument not of type Guest'
         if titr_volume_array:
-            assert len(titr_volume_array) == num_titr, f'Number of titrations not matched with sequence given.'
+            assert len(titr_volume_array) == num_titr, 'Number of titrations not matched with sequence given.'
 
         self.host = host
         self.guest = guest
