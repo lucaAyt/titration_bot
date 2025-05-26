@@ -24,7 +24,7 @@ For development installation, the following is recommended:
 ```shell
 # For development purposes it is best to clone and then pip install as an editable.
 git clone ssh://git@github.com/lucaAyt/titration_bot.git
-cd titration_prd
+cd titration_bot
 pip install -e .
 ```
 
