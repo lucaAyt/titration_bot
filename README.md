@@ -17,6 +17,10 @@ The package is pip installable (ssh recommended):
 # ssh
 pip install git+ssh://git@github.com/lucaAyt/titration_bot.git
 ```
+```shell
+# https
+pip install git+https://git@github.com/lucaAyt/titration_bot.git
+```
 To setup ssh keys see the following:<br>
 https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
 
